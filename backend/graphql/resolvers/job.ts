@@ -52,6 +52,22 @@ const resolvers = {
       return res;
     },
   },
+  Query: {
+    async myJobs(_: unknown, args: {}, ctx: any): Promise<IJob[] | null> {
+      const loggedInUserId = getLoggedInUserId(ctx);
+      const userId = loggedInUserId?.userId;
+
+      if (!userId) {
+        throw new ApolloError("User not authenticated", "NOT_AUTHENTICATED");
+      }
+
+      const myJobs = await Job.find({ postedBy: userId });
+
+      const jobsAsObjects = myJobs.map((job) => job.toObject()) as IJob[];
+
+      return jobsAsObjects;
+    },
+  },
 };
 
 export default resolvers;

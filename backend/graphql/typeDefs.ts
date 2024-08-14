@@ -74,6 +74,7 @@ export const typeDefs = gql`
 
   type Query {
     me: User
+    myJobs: [Job]
   }
 
   type Mutation {
