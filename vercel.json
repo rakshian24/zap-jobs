@@ -1,4 +1,19 @@
 {
 	"version": 2,
-	"rewrites": [{ "source": "/(.*)", "destination": "/backend" }]
-}
+	"builds": [
+	  {
+		"src": "backend/index.ts",
+		"use": "@vercel/node"
+	  }
+	],
+	"routes": [
+	  {
+		"src": "/graphql",
+		"dest": "/backend/index.ts"
+	  },
+	  {
+		"src": "/(.*)",
+		"dest": "/backend/index.ts"
+	  }
+	]
+  }
