@@ -1,9 +1,54 @@
+import { Route, Routes } from "react-router-dom";
+import Header from "./components/Header";
+import { ROUTES, screenSize } from "./constants";
+import { useAuth } from "./context/authContext";
+import { Stack, useMediaQuery } from "@mui/material";
+import Home from "./pages/home";
+import Register from "./components/Register/Register";
+import Login from "./components/Login/Login";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Dashboard from "./pages/dashboard/Dashboard";
+import Footer from "./components/Footer/Footer";
+
 function App() {
+  const { user } = useAuth();
+  const isTablet = useMediaQuery(`(max-width:${screenSize.tablet})`);
+  const isPcAndAbove = useMediaQuery(`(min-width:${screenSize.pc})`);
+  const isMobile = useMediaQuery(`(max-width:${screenSize.mobile})`);
+
+  const { REGISTER, LOGIN, DASHBOARD } = ROUTES;
+
   return (
-    <div>
-      <h1>ZapJobs</h1>
-      <h2>Zap into your dream job</h2>
-    </div>
+    <Stack sx={{ height: "100vh", minHeight: "100vh", margin: 0 }}>
+      {!isTablet && <Header />}
+      <Stack
+        sx={{
+          height: "100%",
+          overflowY: "auto",
+        }}
+      >
+        <Stack
+          sx={{
+            maxWidth: "1300px",
+            ...(isPcAndAbove && { width: "100%" }),
+            margin: isTablet ? "0" : "0 auto",
+            padding: isMobile ? 2 : 3,
+          }}
+        >
+          <Routes>
+            <Route path={REGISTER} element={<Home />}>
+              <Route element={<Register />} index />
+              <Route element={<Login />} path={LOGIN} />
+            </Route>
+            {/* Protected routes */}
+            <Route path="" element={<ProtectedRoute />}>
+              <Route element={<Dashboard userInfo={user} />} path={DASHBOARD} />
+            </Route>
+          </Routes>
+        </Stack>
+      </Stack>
+      {isTablet && user?.userId && <Footer userInfo={user} />}
+    </Stack>
   );
 }
 
