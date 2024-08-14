@@ -4,24 +4,13 @@ import path from "path";
 import dotenv from "dotenv";
 dotenv.config({ path: "./.env" });
 import { connectDB } from "./db";
+import { typeDefs } from "./graphql/typeDefs";
+import resolvers from "./graphql/resolvers";
 
 const app = express();
 const { SERVER_PORT } = process.env;
 
 connectDB();
-
-// GraphQL setup
-const typeDefs = /* GraphQL */ `
-  type Query {
-    hello: String!
-  }
-`;
-
-const resolvers = {
-  Query: {
-    hello: () => "Hello from GraphQL Yoga!",
-  },
-};
 
 const yoga = createYoga({
   schema: createSchema({
