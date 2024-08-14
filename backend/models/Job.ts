@@ -1,4 +1,16 @@
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
+
+export interface IJob extends Document {
+  title: string;
+  description: string;
+  requirements: string[];
+  tags: string[];
+  companyName: string;
+  contactInfo: string;
+  salaryPerHour: number;
+  postedBy: Types.ObjectId;
+  applicants?: Types.ObjectId[];
+}
 
 const Schema = mongoose.Schema;
 
@@ -26,7 +38,7 @@ const JobSchema = new Schema(
     },
     salaryPerHour: Number,
     postedBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    applications: [{ type: Schema.Types.ObjectId, ref: "Application" }],
+    applicants: [{ type: Schema.Types.ObjectId, ref: "User" }],
   },
   {
     timestamps: true,

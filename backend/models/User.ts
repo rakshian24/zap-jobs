@@ -7,20 +7,15 @@ enum Role {
   Employer = "Employer",
 }
 
-interface IProfile {
-  skillSet?: string[];
-  minSalaryPerHour?: number;
-  companyName?: string;
-  contactInfo?: string;
-}
-
 export interface IUser extends Document {
   username: string;
   email: string;
   password: string;
   confirmPassword?: string;
   role: Role;
-  profile: IProfile;
+  skills?: string[];
+  githubProfile?: string;
+  projects?: string[];
   createdAt: Date;
   updatedAt: Date;
   matchPassword: (enteredPassword: string) => Promise<boolean>;
@@ -61,12 +56,9 @@ const userSchema = new Schema(
       enum: [Role.Freelancer, Role.Employer],
       required: true,
     },
-    profile: {
-      skillSet: [String], // Freelancer specific
-      minSalaryPerHour: Number, // Freelancer specific
-      companyName: String, // Employer specific
-      contactInfo: String, // Employer specific
-    },
+    skills: { type: [String] },
+    githubProfile: { type: String },
+    projects: { type: [String] },
   },
   {
     timestamps: true,

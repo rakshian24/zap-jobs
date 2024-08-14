@@ -17,23 +17,20 @@ export const typeDefs = gql`
   }
 
   type User {
-    _id: ID
+    _id: ID!
     username: String
     email: String
     role: Role!
-    profile: UserProfile!
+    skills: [String]
+    githubProfile: String
+    projects: [String]
+    jobsPosted: [Job]
+    jobsApplied: [Job]
   }
 
   type AuthResponse {
     user: User
     token: String
-  }
-
-  input UserProfileInput {
-    skillSet: [String]
-    minSalaryPerHour: Int
-    companyName: String
-    contactInfo: String
   }
 
   input RegisterInput {
@@ -42,12 +39,37 @@ export const typeDefs = gql`
     password: String!
     confirmPassword: String!
     role: Role!
-    profile: UserProfileInput!
+    skills: [String]
+    githubProfile: String
+    projects: [String]
   }
 
   input LoginInput {
     email: String!
     password: String!
+  }
+
+  type Job {
+    _id: ID!
+    title: String!
+    description: String!
+    requirements: [String]!
+    tags: [String]!
+    companyName: String!
+    contactInfo: String!
+    salaryPerHour: Int!
+    postedBy: User!
+    applicants: [User]
+  }
+
+  input JobInput {
+    title: String!
+    description: String!
+    requirements: [String]!
+    tags: [String]!
+    companyName: String!
+    contactInfo: String!
+    salaryPerHour: Int!
   }
 
   type Query {
@@ -57,5 +79,6 @@ export const typeDefs = gql`
   type Mutation {
     registerUser(registerInput: RegisterInput): AuthResponse
     loginUser(loginInput: LoginInput): AuthResponse
+    createJob(jobInput: JobInput): Job
   }
 `;
