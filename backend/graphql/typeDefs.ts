@@ -75,11 +75,13 @@ export const typeDefs = gql`
   type Query {
     me: User
     myJobs: [Job]
+    getAllJobs(skill: [String], minSalary: Int): [Job]
   }
 
   type Mutation {
     registerUser(registerInput: RegisterInput): AuthResponse
     loginUser(loginInput: LoginInput): AuthResponse
     createJob(jobInput: JobInput): Job
+    applyForJob(jobId: ID!): Job
   }
 `;
