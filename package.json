@@ -4,7 +4,9 @@
   "description": "A job portal which connects freelancers and employers - Intuit Assessment Project",
   "main": "index.ts",
   "scripts": {
-    "build": "cd frontend && yarn install && yarn build && cd .. && yarn move-build-to-backend",
+    "install": "cd frontend && yarn install",
+    "build": "yarn build:frontend && yarn move-build-to-backend",
+    "build:frontend": "cd frontend && yarn build",
     "move-build-to-backend": "rm -rf backend/build && mv frontend/build backend/build",
     "start": "ts-node backend/index.ts"
   },
