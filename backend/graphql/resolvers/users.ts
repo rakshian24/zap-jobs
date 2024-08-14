@@ -9,12 +9,9 @@ interface RegisterInput {
   password: string;
   confirmPassword: string;
   role: string;
-  profile: {
-    skillSet: string[];
-    minSalaryPerHour: number;
-    companyName?: string;
-    contactInfo?: string;
-  };
+  skills: string[];
+  githubProfile: string;
+  projects: string[];
 }
 
 interface LoginInput {
@@ -33,7 +30,9 @@ const resolvers = {
           password,
           confirmPassword,
           role,
-          profile: { skillSet, minSalaryPerHour, companyName, contactInfo },
+          skills,
+          githubProfile,
+          projects,
         },
       }: { registerInput: RegisterInput },
       ctx: any
@@ -53,12 +52,9 @@ const resolvers = {
         password,
         confirmPassword,
         role,
-        profile: {
-          skillSet,
-          minSalaryPerHour,
-          companyName,
-          contactInfo,
-        },
+        skills,
+        githubProfile,
+        projects,
       });
 
       const token = await generateToken(newUser);

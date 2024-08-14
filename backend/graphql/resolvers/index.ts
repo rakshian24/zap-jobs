@@ -1,4 +1,5 @@
 import userResolvers from "./users";
+import jobResolvers from "./job";
 
 export default {
   Query: {
@@ -6,5 +7,6 @@ export default {
   },
   Mutation: {
     ...userResolvers.Mutation,
+    ...jobResolvers.Mutation,
   },
 };
