@@ -52,6 +52,7 @@ export const typeDefs = gql`
     postedBy: User!
     applicants: [User]
     createdAt: DateTime
+    isAppliedByCurrentUser: Boolean!
   }
 
   input JobInput {

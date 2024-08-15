@@ -10,6 +10,7 @@ export interface IJob extends Document {
   salaryPerHour: number;
   postedBy: Types.ObjectId;
   applicants?: Types.ObjectId[];
+  isAppliedByCurrentUser?: boolean;
 }
 
 const Schema = mongoose.Schema;

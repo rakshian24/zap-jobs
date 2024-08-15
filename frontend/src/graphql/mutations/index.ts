@@ -58,6 +58,7 @@ export const APPLY_FOR_JOB = gql`
       companyName
       contactInfo
       salaryPerHour
+      isAppliedByCurrentUser
     }
   }
 `;

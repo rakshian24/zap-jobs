@@ -45,6 +45,7 @@ export const GET_ALL_JOBS = gql`
       contactInfo
       salaryPerHour
       createdAt
+      isAppliedByCurrentUser
       postedBy {
         _id
         username
