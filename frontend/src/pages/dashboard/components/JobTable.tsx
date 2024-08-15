@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { ReactElement, useState } from "react";
 import {
   Table,
   TableBody,
@@ -17,6 +17,7 @@ import TagIcon from "@mui/icons-material/LocalOffer";
 import DateRangeIcon from "@mui/icons-material/DateRange";
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import { screenSize } from "../../../constants";
+import dayjs from "dayjs";
 
 const useStyles = makeStyles(() => ({
   tableContainer: {
@@ -38,83 +39,51 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-interface JobData {
-  jobTitle: string;
-  tags: string;
-  postedOn: string;
-  applications: number;
+interface IUser {
+  _id: string;
+  username: string;
+  email: string;
 }
 
-const dummyData: JobData[] = [
-  {
-    jobTitle: "Frontend Developer",
-    tags: "React, JavaScript",
-    postedOn: "2024-08-01",
-    applications: 23,
-  },
-  {
-    jobTitle: "Backend Developer",
-    tags: "Node.js, Express",
-    postedOn: "2024-08-02",
-    applications: 15,
-  },
-  {
-    jobTitle: "UI/UX Designer",
-    tags: "Figma, Adobe XD",
-    postedOn: "2024-08-03",
-    applications: 10,
-  },
-  {
-    jobTitle: "DevOps Engineer",
-    tags: "AWS, Docker",
-    postedOn: "2024-08-04",
-    applications: 8,
-  },
-  {
-    jobTitle: "Data Scientist",
-    tags: "Python, ML",
-    postedOn: "2024-08-05",
-    applications: 12,
-  },
-  {
-    jobTitle: "QA Tester",
-    tags: "Selenium, Cypress",
-    postedOn: "2024-08-06",
-    applications: 18,
-  },
-  {
-    jobTitle: "Project Manager",
-    tags: "Agile, Scrum",
-    postedOn: "2024-08-07",
-    applications: 5,
-  },
-  {
-    jobTitle: "Content Writer",
-    tags: "SEO, WordPress",
-    postedOn: "2024-08-08",
-    applications: 30,
-  },
-  {
-    jobTitle: "Graphic Designer",
-    tags: "Photoshop, Illustrator",
-    postedOn: "2024-08-09",
-    applications: 9,
-  },
-  {
-    jobTitle: "Marketing Specialist",
-    tags: "Google Ads, Analytics",
-    postedOn: "2024-08-10",
-    applications: 14,
-  },
-];
+interface IJobData {
+  _id: string;
+  title: string;
+  description: string;
+  requirements: string[];
+  tags: string[];
+  companyName: string;
+  contactInfo: string;
+  salaryPerHour: number;
+  applicants: IUser[];
+  createdAt: Date;
+}
 
-const JobTable: React.FC = () => {
+type JobTableProps = {
+  jobData: IJobData[];
+};
+
+type TableHeaderProps = {
+  title: string;
+  icon: ReactElement;
+};
+
+const TableHeader = ({ title, icon }: TableHeaderProps) => {
+  return (
+    <TableCell>
+      <Stack direction={"row"} gap={1} alignItems={"center"}>
+        {icon}
+        {title}
+      </Stack>
+    </TableCell>
+  );
+};
+
+const JobTable = ({ jobData }: JobTableProps) => {
   const classes = useStyles();
   const isMobile = useMediaQuery(`(max-width:${screenSize.mobile})`);
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [showTags] = useState(isMobile ? false : true);
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -127,7 +96,7 @@ const JobTable: React.FC = () => {
     setPage(0);
   };
 
-  const paginatedData = dummyData.slice(
+  const paginatedData = jobData.slice(
     page * rowsPerPage,
     page * rowsPerPage + rowsPerPage
   );
@@ -137,52 +106,32 @@ const JobTable: React.FC = () => {
       <Table className={isMobile ? classes.mobileTable : ""}>
         <TableHead>
           <TableRow>
-            <TableCell>
-              <Stack direction={"row"} gap={1} alignItems={"center"}>
-                {!isMobile && (
-                  <WorkOutlineIcon className={classes.headerIcon} />
-                )}
-                Job Title
-              </Stack>
-            </TableCell>
-            {showTags && (
-              <TableCell>
-                <Stack direction={"row"} gap={1} alignItems={"center"}>
-                  {!isMobile && <TagIcon className={classes.headerIcon} />}
-                  Tags
-                </Stack>
-              </TableCell>
+            <TableHeader title="Job Title" icon={<WorkOutlineIcon />} />
+            {!isMobile && <TableHeader title="Tags" icon={<TagIcon />} />}
+            {!isMobile && (
+              <TableHeader title=" Posted On" icon={<DateRangeIcon />} />
             )}
-            <TableCell>
-              <Stack direction={"row"} gap={1} alignItems={"center"}>
-                {!isMobile && <DateRangeIcon className={classes.headerIcon} />}
-                Posted On
-              </Stack>
-            </TableCell>
-            <TableCell>
-              <Stack direction={"row"} gap={1} alignItems={"center"}>
-                {!isMobile && (
-                  <AssignmentIndIcon className={classes.headerIcon} />
-                )}
-                Applications
-              </Stack>
-            </TableCell>
+            <TableHeader title="Applications" icon={<AssignmentIndIcon />} />
           </TableRow>
         </TableHead>
         <TableBody>
-          {paginatedData.map((job, index) => (
-            <TableRow key={index}>
-              <TableCell>{job.jobTitle}</TableCell>
-              {showTags && <TableCell>{job.tags}</TableCell>}
-              <TableCell>{job.postedOn}</TableCell>
-              <TableCell>{job.applications}</TableCell>
+          {paginatedData.map((job: IJobData) => (
+            <TableRow key={job._id}>
+              <TableCell>{job.title}</TableCell>
+              {!isMobile && <TableCell>{job.tags.join(", ")}</TableCell>}
+              {!isMobile && (
+                <TableCell>
+                  {dayjs(job.createdAt).format("DD-MMM-YYYY, hh:mm A")}
+                </TableCell>
+              )}
+              <TableCell>{job.applicants.length}</TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
       <TablePagination
         component="div"
-        count={dummyData.length}
+        count={jobData?.length}
         page={page}
         onPageChange={handleChangePage}
         rowsPerPage={rowsPerPage}

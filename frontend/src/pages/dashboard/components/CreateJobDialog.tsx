@@ -25,9 +25,10 @@ import Button from "../../../components/CustomButton";
 type Props = {
   handleClose: () => void;
   open: boolean;
+  onJobCreated: () => void;
 };
 
-const CreateJobDialog = ({ open, handleClose }: Props) => {
+const CreateJobDialog = ({ open, handleClose, onJobCreated }: Props) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -68,6 +69,8 @@ const CreateJobDialog = ({ open, handleClose }: Props) => {
       setSnackbarMessage("Job created successfully!");
       setSnackbarSeverity("success");
       setSnackbarOpen(true);
+
+      onJobCreated();
 
       handleClose();
       reset({
