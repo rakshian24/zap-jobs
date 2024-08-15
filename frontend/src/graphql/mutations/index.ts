@@ -46,3 +46,18 @@ export const CREATE_JOB = gql`
     }
   }
 `;
+
+export const APPLY_FOR_JOB = gql`
+  mutation Mutation($jobId: ID!) {
+    applyForJob(jobId: $jobId) {
+      _id
+      title
+      description
+      requirements
+      tags
+      companyName
+      contactInfo
+      salaryPerHour
+    }
+  }
+`;

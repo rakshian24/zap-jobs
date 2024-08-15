@@ -9,13 +9,6 @@ export const typeDefs = gql`
     Employer
   }
 
-  type UserProfile {
-    skillSet: [String]
-    minSalaryPerHour: Int
-    companyName: String
-    contactInfo: String
-  }
-
   type User {
     _id: ID!
     username: String
