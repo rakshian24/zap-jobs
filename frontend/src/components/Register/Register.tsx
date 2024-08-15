@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   Backdrop,
-  Button,
   CircularProgress,
   MenuItem,
   SelectChangeEvent,
@@ -18,16 +17,20 @@ import {
 import { emailRegex, textInputRegex } from "../../utils";
 import CustomInput from "../CustomInput";
 import { Link, useNavigate } from "react-router-dom";
-import { ROUTES, screenSize } from "../../constants";
+import { colors, ROUTES, screenSize } from "../../constants";
 import { useAuth } from "../../context/authContext";
 import { useMutation } from "@apollo/client";
 import { REGISTER_USER_MUTATION } from "../../graphql/mutations";
 import TagInput from "../TagInput";
 import CustomSelect from "../CustomSelect";
+import Button from "../CustomButton";
+import { NavigateNext } from "@mui/icons-material";
+import ErrorBox from "../ErrorBox";
 
 const Register = () => {
   const { storeTokenInLS, user } = useAuth();
   const navigate = useNavigate();
+  const isTablet = useMediaQuery(`(max-width:${screenSize.tablet})`);
 
   const [tags, setTags] = useState<string[]>([]); // State to store tags
 
@@ -35,12 +38,14 @@ const Register = () => {
 
   const isMobile = useMediaQuery(`(max-width:${screenSize.mobile})`);
 
-  const { control, formState, handleSubmit, watch } = useForm({
+  const { control, formState, handleSubmit, watch, trigger } = useForm({
     defaultValues: { ...InitialRegisterFormValues },
     mode: "onChange",
   });
 
   const selectedRole = watch("role");
+  const newPassword = watch("password");
+  const newConfirmPassword = watch("confirmPassword");
 
   const { errors } = formState;
   const COMMON_PROPS = { control: control, errors: errors };
@@ -68,8 +73,8 @@ const Register = () => {
   };
 
   return (
-    <Stack gap={2}>
-      <Typography fontSize={24} fontWeight={600}>
+    <Stack gap={5} width={"100%"}>
+      <Typography fontSize={isTablet ? 24 : 30} fontWeight={600}>
         Create an account
       </Typography>
       <Backdrop
@@ -81,52 +86,57 @@ const Register = () => {
       <Stack>
         <form noValidate onSubmit={handleSubmit(onSubmitHandler)}>
           <Stack gap={2}>
-            <Controller
-              name="role"
-              {...COMMON_PROPS}
-              rules={{
-                required: true,
-              }}
-              render={({ field, fieldState: { error } }) => (
-                <CustomSelect
-                  {...field}
-                  error={error !== undefined}
-                  styles={{ width: "100%" }}
-                  label={"Role type"}
-                  placeholder="Select the role type"
-                  defaultValue={field.value}
-                  onChange={(e: SelectChangeEvent<unknown>) => {
-                    field.onChange(e.target.value);
-                  }}
-                >
-                  {Object.values(Roles).map((role, index) => (
-                    <MenuItem key={index} value={role}>
-                      {role}
-                    </MenuItem>
-                  ))}
-                </CustomSelect>
-              )}
-            />
-            <Controller
-              name="username"
-              {...COMMON_PROPS}
-              rules={{
-                required: true,
-                pattern: {
-                  value: textInputRegex,
-                  message: "Invalid characters",
-                },
-              }}
-              render={({ field, fieldState: { error } }) => (
-                <CustomInput
-                  {...field}
-                  error={error !== undefined}
-                  styles={{ width: "100%" }}
-                  placeholder="Enter username"
-                  label="Username"
-                />
-              )}
-            />
+            <Stack
+              direction={isTablet ? "column" : "row"}
+              gap={isTablet ? 2 : 3}
+            >
+              <Controller
+                name="role"
+                {...COMMON_PROPS}
+                rules={{
+                  required: true,
+                }}
+                render={({ field, fieldState: { error } }) => (
+                  <CustomSelect
+                    {...field}
+                    error={error !== undefined}
+                    styles={{ width: "100%" }}
+                    label={"Role type"}
+                    placeholder="Select your role"
+                    defaultValue={field.value}
+                    onChange={(e: SelectChangeEvent<unknown>) => {
+                      field.onChange(e.target.value);
+                    }}
+                  >
+                    {Object.values(Roles).map((role, index) => (
+                      <MenuItem key={index} value={role}>
+                        {role}
+                      </MenuItem>
+                    ))}
+                  </CustomSelect>
+                )}
+              />
+              <Controller
+                name="username"
+                {...COMMON_PROPS}
+                rules={{
+                  required: true,
+                  pattern: {
+                    value: textInputRegex,
+                    message: "Invalid characters",
+                  },
+                }}
+                render={({ field, fieldState: { error } }) => (
+                  <CustomInput
+                    {...field}
+                    error={error !== undefined}
+                    styles={{ width: "100%" }}
+                    placeholder="Enter username"
+                    label="Username"
+                  />
+                )}
+              />
+            </Stack>
             <Controller
               name="email"
               {...COMMON_PROPS}
@@ -160,11 +170,16 @@ const Register = () => {
               render={({ field, fieldState: { error } }) => (
                 <CustomInput
                   {...field}
+                  isProtected
+                  onKeyUp={() => {
+                    if (!!newConfirmPassword) {
+                      trigger("confirmPassword");
+                    }
+                  }}
                   error={error !== undefined}
                   styles={{ width: "100%" }}
                   placeholder="Enter password"
                   label="Password"
-                  type="password"
                 />
               )}
             />
@@ -173,19 +188,17 @@ const Register = () => {
               {...COMMON_PROPS}
               rules={{
                 required: true,
-                pattern: {
-                  value: textInputRegex,
-                  message: "Invalid characters",
-                },
+                validate: (value) =>
+                  value === newPassword || `Passwords do not match.`,
               }}
               render={({ field, fieldState: { error } }) => (
                 <CustomInput
                   {...field}
+                  isProtected
                   error={error !== undefined}
                   styles={{ width: "100%" }}
                   placeholder="Enter confirm password"
                   label="Confirm password"
-                  type="password"
                 />
               )}
             />
@@ -211,9 +224,14 @@ const Register = () => {
                     />
                   )}
                 />
-                <TagInput onTagsChange={(newTags) => setTags(newTags)} />
+                <TagInput
+                  onTagsChange={(newTags) => setTags(newTags)}
+                  label="Skills"
+                  placeholder="Enter your skills"
+                />
               </>
             )}
+            <ErrorBox formState={formState} style={{ mb: 2 }} />
             <Stack
               display={"flex"}
               direction={isMobile ? "column" : "row"}
@@ -228,20 +246,18 @@ const Register = () => {
                   style={{
                     marginLeft: "4px",
                     fontWeight: 500,
+                    color: colors.brown,
                   }}
                 >
                   Sign In
                 </Link>
               </Typography>
               <Button
+                buttonText="Register"
                 onClick={() => onSubmitHandler}
-                variant="contained"
-                type="submit"
-                sx={{ width: "120px", mt: isMobile ? "12px" : 0 }}
-                // disabled={isFormDisabled}
-              >
-                Register
-              </Button>
+                disabled={isFormDisabled}
+                endIcon={<NavigateNext />}
+              />
             </Stack>
           </Stack>
         </form>

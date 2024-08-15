@@ -11,7 +11,7 @@ import Dashboard from "./pages/dashboard/Dashboard";
 import Footer from "./components/Footer/Footer";
 
 function App() {
-  const { user } = useAuth();
+  const { user, isLoggedIn } = useAuth();
   const isTablet = useMediaQuery(`(max-width:${screenSize.tablet})`);
   const isPcAndAbove = useMediaQuery(`(min-width:${screenSize.pc})`);
   const isMobile = useMediaQuery(`(max-width:${screenSize.mobile})`);
@@ -20,34 +20,40 @@ function App() {
 
   return (
     <Stack sx={{ height: "100vh", minHeight: "100vh", margin: 0 }}>
-      {!isTablet && <Header />}
+      {!isTablet && isLoggedIn && <Header />}
       <Stack
         sx={{
           height: "100%",
           overflowY: "auto",
         }}
       >
-        <Stack
-          sx={{
-            maxWidth: "1300px",
-            ...(isPcAndAbove && { width: "100%" }),
-            margin: isTablet ? "0" : "0 auto",
-            padding: isMobile ? 2 : 3,
-          }}
-        >
-          <Routes>
-            <Route path={REGISTER} element={<Home />}>
-              <Route element={<Register />} index />
-              <Route element={<Login />} path={LOGIN} />
-            </Route>
-            {/* Protected routes */}
-            <Route path="" element={<ProtectedRoute />}>
-              <Route element={<Dashboard userInfo={user} />} path={DASHBOARD} />
-            </Route>
-          </Routes>
-        </Stack>
+        <Routes>
+          <Route path={REGISTER} element={<Home />}>
+            <Route element={<Register />} index />
+            <Route element={<Login />} path={LOGIN} />
+          </Route>
+        </Routes>
+        {isLoggedIn && (
+          <Stack
+            sx={{
+              maxWidth: "1300px",
+              ...(isPcAndAbove && { width: "100%" }),
+              margin: isTablet ? "0" : "0 auto",
+              padding: isMobile ? 2 : 3,
+            }}
+          >
+            <Routes>
+              <Route path="" element={<ProtectedRoute />}>
+                <Route
+                  element={<Dashboard userInfo={user} />}
+                  path={DASHBOARD}
+                />
+              </Route>
+            </Routes>
+          </Stack>
+        )}
       </Stack>
-      {isTablet && user?.userId && <Footer userInfo={user} />}
+      {isTablet && isLoggedIn && <Footer userInfo={user} />}
     </Stack>
   );
 }
