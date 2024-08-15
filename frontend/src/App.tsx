@@ -7,7 +7,7 @@ import Home from "./pages/home";
 import Register from "./components/Register/Register";
 import Login from "./components/Login/Login";
 import ProtectedRoute from "./components/ProtectedRoute";
-import Dashboard from "./pages/dashboard/Dashboard";
+import Dashboard from "./pages/dashboard";
 import Footer from "./components/Footer/Footer";
 
 function App() {
