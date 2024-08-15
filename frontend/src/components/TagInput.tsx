@@ -7,22 +7,31 @@ interface TagInputProps {
   placeholder?: string;
   onTagsChange?: (tags: string[]) => void;
   label?: string;
+  dataTestId?: string;
 }
 
 const TagInput: React.FC<TagInputProps> = ({
   placeholder,
   onTagsChange,
   label,
+  dataTestId,
 }) => {
   const [inputValue, setInputValue] = useState<string>("");
   const [tags, setTags] = useState<string[]>([]);
 
+  const addTag = (tag: string) => {
+    if (tag.trim() !== "" && !tags.includes(tag.trim())) {
+      setTags([...tags, tag.trim()]);
+    }
+  };
+
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter" && inputValue.trim() !== "") {
+    if (
+      (event.key === "Enter" || event.key === ",") &&
+      inputValue.trim() !== ""
+    ) {
       event.preventDefault();
-      if (!tags.includes(inputValue.trim())) {
-        setTags([...tags, inputValue.trim()]);
-      }
+      addTag(inputValue);
       setInputValue("");
     } else if (
       event.key === "Backspace" &&
@@ -30,6 +39,17 @@ const TagInput: React.FC<TagInputProps> = ({
       tags.length > 0
     ) {
       setTags(tags.slice(0, tags.length - 1));
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (value.includes(",")) {
+      const parts = value.split(",");
+      parts.forEach((part) => addTag(part));
+      setInputValue("");
+    } else {
+      setInputValue(value);
     }
   };
 
@@ -49,10 +69,13 @@ const TagInput: React.FC<TagInputProps> = ({
         variant="filled"
         placeholder={tags.length === 0 ? placeholder || "" : ""}
         value={inputValue}
-        onChange={(e) => setInputValue(e.target.value)}
+        onChange={handleInputChange}
         onKeyDown={handleKeyDown}
         fullWidth
         InputProps={{
+          inputProps: {
+            "data-testid": dataTestId,
+          },
           disableUnderline: true,
           startAdornment: (
             <Stack

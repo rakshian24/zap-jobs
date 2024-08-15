@@ -165,6 +165,7 @@ const CreateJobDialog = ({ open, handleClose, onJobCreated }: Props) => {
                     styles={{ width: "100%" }}
                     placeholder="Enter job title"
                     label="Job title"
+                    dataTestId="jobTitle"
                   />
                 )}
               />
@@ -186,6 +187,7 @@ const CreateJobDialog = ({ open, handleClose, onJobCreated }: Props) => {
                     styles={{ width: "100%" }}
                     placeholder="Enter job description"
                     label="Job Description"
+                    dataTestId="jobDescription"
                   />
                 )}
               />
@@ -195,12 +197,14 @@ const CreateJobDialog = ({ open, handleClose, onJobCreated }: Props) => {
                 }
                 label="Job requirements"
                 placeholder="Enter job requirements"
+                dataTestId="jobRequirements"
               />
 
               <TagInput
                 onTagsChange={(newTags) => setTags(newTags)}
                 label="Tags"
                 placeholder="Enter tags"
+                dataTestId="tags"
               />
 
               <Stack
@@ -224,6 +228,7 @@ const CreateJobDialog = ({ open, handleClose, onJobCreated }: Props) => {
                       styles={{ width: "100%" }}
                       placeholder="Enter company name"
                       label="Company name"
+                      dataTestId="companyName"
                     />
                   )}
                 />
@@ -244,6 +249,7 @@ const CreateJobDialog = ({ open, handleClose, onJobCreated }: Props) => {
                       styles={{ width: "100%" }}
                       placeholder="Enter contact info"
                       label="Contact info"
+                      dataTestId="contactInfo"
                     />
                   )}
                 />
@@ -271,6 +277,7 @@ const CreateJobDialog = ({ open, handleClose, onJobCreated }: Props) => {
                     inputProps={{
                       min: "0",
                     }}
+                    dataTestId="salaryPerHr"
                   />
                 )}
               />

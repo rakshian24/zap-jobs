@@ -22,7 +22,7 @@ const Button = ({
   onClick = () => {},
   startIcon,
   endIcon,
-  dataTestId,
+  dataTestId = "SubmitBtn",
   ...props
 }: ButtonProps) => (
   <LoadingButton
