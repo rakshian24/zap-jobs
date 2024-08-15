@@ -23,7 +23,6 @@ export const typeDefs = gql`
     role: Role!
     skills: [String]
     githubProfile: String
-    projects: [String]
     jobsPosted: [Job]
     jobsApplied: [Job]
   }
@@ -41,7 +40,6 @@ export const typeDefs = gql`
     role: Role!
     skills: [String]
     githubProfile: String
-    projects: [String]
   }
 
   input LoginInput {

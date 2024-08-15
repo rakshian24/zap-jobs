@@ -11,7 +11,6 @@ export const REGISTER_USER_MUTATION = gql`
         role
         skills
         githubProfile
-        projects
       }
     }
   }
@@ -28,8 +27,22 @@ export const LOGIN_MUTATION = gql`
         role
         skills
         githubProfile
-        projects
       }
+    }
+  }
+`;
+
+export const CREATE_JOB = gql`
+  mutation Mutation($jobInput: JobInput) {
+    createJob(jobInput: $jobInput) {
+      _id
+      title
+      description
+      requirements
+      tags
+      companyName
+      contactInfo
+      salaryPerHour
     }
   }
 `;

@@ -11,7 +11,6 @@ interface RegisterInput {
   role: string;
   skills: string[];
   githubProfile: string;
-  projects: string[];
 }
 
 interface LoginInput {
@@ -32,7 +31,6 @@ const resolvers = {
           role,
           skills,
           githubProfile,
-          projects,
         },
       }: { registerInput: RegisterInput },
       ctx: any
@@ -54,7 +52,6 @@ const resolvers = {
         role,
         skills,
         githubProfile,
-        projects,
       });
 
       const token = await generateToken(newUser);

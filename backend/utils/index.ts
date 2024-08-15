@@ -8,6 +8,7 @@ export const generateToken = async (user: any): Promise<string> => {
           userId: user._id,
           email: user.email,
           username: user.username,
+          role: user.role,
         },
         process.env.JWT_SECRET as string,
         {
