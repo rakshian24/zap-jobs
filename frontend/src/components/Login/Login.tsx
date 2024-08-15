@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   Backdrop,
-  Button,
+  // Button,
   CircularProgress,
   Stack,
   Typography,
@@ -16,6 +16,9 @@ import { ROUTES, screenSize } from "../../constants";
 import { useMutation } from "@apollo/client";
 import { useAuth } from "../../context/authContext";
 import { LOGIN_MUTATION } from "../../graphql/mutations";
+import Button from "../CustomButton";
+import { NavigateNext } from "@mui/icons-material";
+import ErrorBox from "../ErrorBox";
 
 const Login = () => {
   const { user, storeTokenInLS } = useAuth();
@@ -25,9 +28,11 @@ const Login = () => {
     mode: "onChange",
   });
   const isMobile = useMediaQuery(`(max-width:${screenSize.mobile})`);
+  const isTablet = useMediaQuery(`(max-width:${screenSize.tablet})`);
 
   const { errors } = formState;
   const COMMON_PROPS = { control: control, errors: errors };
+  const isFormDisabled = !formState.isValid;
 
   useEffect(() => {
     if (user?.userId) {
@@ -50,8 +55,8 @@ const Login = () => {
   };
 
   return (
-    <Stack gap={2}>
-      <Typography fontSize={24} fontWeight={600}>
+    <Stack gap={5} width={"100%"}>
+      <Typography fontSize={isTablet ? 24 : 30} fontWeight={600}>
         Login
       </Typography>
       <Backdrop
@@ -96,16 +101,16 @@ const Login = () => {
               }}
               render={({ field, fieldState: { error } }) => (
                 <CustomInput
+                  isProtected
                   {...field}
                   error={error !== undefined}
                   styles={{ width: "100%" }}
                   placeholder="Enter password"
                   label="Password"
-                  type="password"
                 />
               )}
             />
-
+            <ErrorBox formState={formState} style={{ mb: 2 }} />
             <Stack
               display={"flex"}
               direction={isMobile ? "column" : "row"}
@@ -126,13 +131,11 @@ const Login = () => {
                 </Link>
               </Typography>
               <Button
+                buttonText="Log in"
                 onClick={() => onSubmitHandler}
-                variant="contained"
-                type="submit"
-                sx={{ width: "120px", mt: isMobile ? "12px" : 0 }}
-              >
-                Login
-              </Button>
+                disabled={isFormDisabled}
+                endIcon={<NavigateNext />}
+              />
             </Stack>
           </Stack>
         </form>
