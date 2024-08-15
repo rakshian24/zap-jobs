@@ -1,18 +1,35 @@
-import { Button, Stack, Typography } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useRef } from "react";
+import { Avatar, Box, Stack, ClickAwayListener } from "@mui/material";
+import { Link } from "react-router-dom";
 import { useAuth } from "../context/authContext";
-import { ROUTES } from "../constants";
-import client from "../apolloClient";
+import { colors } from "../constants";
+import { ReactComponent as Logo } from "../assets/svgs/logo.svg";
+import { getInitials } from "../utils";
+import ProfileTab from "./ProfileTab";
 
 const Header = () => {
-  const { user, logoutUser } = useAuth();
-  const navigate = useNavigate();
+  const { user } = useAuth();
 
-  const onLogOut = () => {
-    client.clearStore();
-    logoutUser();
-    navigate(ROUTES.LOGIN);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const popperRef = useRef<HTMLDivElement>(null);
+
+  const handleAvatarClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(anchorEl ? null : event.currentTarget);
   };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleClickAway = (event: MouseEvent | TouchEvent) => {
+    if (popperRef.current && popperRef.current.contains(event.target as Node)) {
+      return;
+    }
+    handleClose();
+  };
+
+  const open = Boolean(anchorEl);
+
   return (
     <Stack
       direction={"row"}
@@ -20,20 +37,41 @@ const Header = () => {
       alignItems={"center"}
       sx={{
         px: 2,
-        py: 2,
+        py: 1,
         boxShadow: "rgba(0, 0, 0, 0.16) 0px 1px 4px;",
         position: "sticky",
       }}
     >
       <Link to={"/"}>
-        <Typography fontSize={24} fontWeight={600}>
-          Zap jobs
-        </Typography>
+        <Box>
+          <Logo width="200px" />
+        </Box>
       </Link>
       {user?.userId && (
-        <Button variant="outlined" onClick={onLogOut}>
-          Logout
-        </Button>
+        <ClickAwayListener onClickAway={handleClickAway}>
+          <div>
+            <Avatar
+              sx={{
+                width: "40px",
+                height: "40px",
+                fontSize: "16px",
+                fontWeight: 500,
+                backgroundColor: colors.brown,
+                color: colors.white,
+                cursor: "pointer",
+              }}
+              onClick={handleAvatarClick}
+            >
+              {getInitials(user.username)}
+            </Avatar>
+            <ProfileTab
+              open={open}
+              anchorEl={anchorEl}
+              popperRef={popperRef}
+              handleClose={handleClose}
+            />
+          </div>
+        </ClickAwayListener>
       )}
     </Stack>
   );

@@ -32,7 +32,7 @@ const Home = () => {
         display={"flex"}
         justifyContent={isTablet ? "flex-start" : "center"}
       >
-        <Stack py={isTablet ? 0 : 7.5}>
+        <Stack py={isTablet ? 0 : 7.5} maxWidth={"768px"}>
           {isTablet && (
             <Stack>
               <Logo width="200px" style={{ marginTop: "32px" }} />
