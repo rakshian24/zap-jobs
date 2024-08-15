@@ -12,6 +12,7 @@ import { screenSize } from "../../constants";
 import { GET_USER } from "../../graphql/queries";
 import { useQuery } from "@apollo/client";
 import Skeleton from "./Skeleton";
+import GithubProjectsTable from "./GithubProjectsTable";
 
 const Profile = ({ userId = "" }: { userId: string }) => {
   const isTablet = useMediaQuery(`(max-width:${screenSize.tablet})`);
@@ -56,6 +57,7 @@ const Profile = ({ userId = "" }: { userId: string }) => {
         <Typography variant={isTablet ? "h6" : "h5"}>
           Github projects
         </Typography>
+        <GithubProjectsTable githubUsername={data?.user?.githubProfile || ""} />
       </Stack>
     </Stack>
   );
