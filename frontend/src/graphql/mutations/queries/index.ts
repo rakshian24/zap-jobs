@@ -11,6 +11,7 @@ export const GET_MY_JOBS = gql`
       companyName
       contactInfo
       salaryPerHour
+      createdAt
       applicants {
         _id
         username

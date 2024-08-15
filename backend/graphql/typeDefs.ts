@@ -58,6 +58,7 @@ export const typeDefs = gql`
     salaryPerHour: Int!
     postedBy: User!
     applicants: [User]
+    createdAt: DateTime
   }
 
   input JobInput {

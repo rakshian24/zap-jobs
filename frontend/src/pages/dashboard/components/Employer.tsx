@@ -6,18 +6,17 @@ import { GET_MY_JOBS } from "../../../graphql/mutations/queries";
 import Button from "../../../components/CustomButton";
 import { useState } from "react";
 import CreateJobDialog from "./CreateJobDialog";
+import CommonSkeleton from "../../../components/CommonSkeleton";
 
 const Employer = () => {
   const isTablet = useMediaQuery(`(max-width:${screenSize.tablet})`);
-  const [showCreateJobModal, setShowCreateJobForm] = useState<boolean>(false);
+  const [showCreateJobModal, setShowCreateJobModal] = useState<boolean>(false);
 
-  const { data, loading } = useQuery(GET_MY_JOBS);
+  const { data, loading: isJobsDataLoading, refetch } = useQuery(GET_MY_JOBS);
 
-  if (loading) {
-    return <p>Loading...</p>;
-  }
-
-  console.log("datadata = ", data);
+  const handleJobCreated = () => {
+    refetch();
+  };
 
   return (
     <Stack gap={isTablet ? 3 : 4}>
@@ -28,7 +27,7 @@ const Employer = () => {
       </Typography>
 
       <Stack>
-        <Typography variant={isTablet ? "h5" : "h4"}>
+        <Typography variant={isTablet ? "h6" : "h5"}>
           Create a New Job Posting
         </Typography>
         <Stack
@@ -44,21 +43,29 @@ const Employer = () => {
           </Typography>
           <Button
             buttonText="Create Job"
-            onClick={() => setShowCreateJobForm(true)}
+            onClick={() => setShowCreateJobModal(true)}
             styles={{ alignSelf: "flex-end" }}
           />
         </Stack>
       </Stack>
       <CreateJobDialog
         open={showCreateJobModal}
-        handleClose={() => setShowCreateJobForm(false)}
+        handleClose={() => setShowCreateJobModal(false)}
+        onJobCreated={handleJobCreated}
       />
 
       <Stack gap={isTablet ? 3 : 4}>
-        <Typography variant={isTablet ? "h5" : "h4"}>
+        <Typography variant={isTablet ? "h6" : "h5"}>
           Your Job Postings
         </Typography>
-        <JobTable />
+        {isJobsDataLoading ? (
+          <CommonSkeleton
+            height={350}
+            sx={{ borderRadius: isTablet ? 3 : 6 }}
+          />
+        ) : (
+          <JobTable jobData={data?.myJobs || []} />
+        )}
       </Stack>
     </Stack>
   );
