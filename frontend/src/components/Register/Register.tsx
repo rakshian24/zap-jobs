@@ -32,11 +32,9 @@ const Register = () => {
   const navigate = useNavigate();
   const isTablet = useMediaQuery(`(max-width:${screenSize.tablet})`);
 
-  const [tags, setTags] = useState<string[]>([]); // State to store tags
+  const [tags, setTags] = useState<string[]>([]);
 
   const [registerUser, { loading }] = useMutation(REGISTER_USER_MUTATION);
-
-  const isMobile = useMediaQuery(`(max-width:${screenSize.mobile})`);
 
   const { control, formState, handleSubmit, watch, trigger } = useForm({
     defaultValues: { ...InitialRegisterFormValues },
@@ -73,7 +71,7 @@ const Register = () => {
   };
 
   return (
-    <Stack gap={5} width={"100%"}>
+    <Stack gap={isTablet ? 3 : 5} width={"100%"} mt={isTablet ? 5 : 0}>
       <Typography fontSize={isTablet ? 24 : 30} fontWeight={600}>
         Create an account
       </Typography>
@@ -234,10 +232,11 @@ const Register = () => {
             <ErrorBox formState={formState} style={{ mb: 2 }} />
             <Stack
               display={"flex"}
-              direction={isMobile ? "column" : "row"}
+              direction={isTablet ? "column" : "row"}
               justifyContent={"space-between"}
-              alignItems={isMobile ? "flex-start" : "center"}
+              alignItems={isTablet ? "flex-start" : "center"}
               mt={1}
+              gap={2}
             >
               <Typography>
                 Already have an account?
@@ -257,6 +256,7 @@ const Register = () => {
                 onClick={() => onSubmitHandler}
                 disabled={isFormDisabled}
                 endIcon={<NavigateNext />}
+                styles={{ alignSelf: "flex-end" }}
               />
             </Stack>
           </Stack>

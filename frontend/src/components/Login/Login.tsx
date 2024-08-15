@@ -27,7 +27,6 @@ const Login = () => {
     defaultValues: { ...InitialLoginFormValues },
     mode: "onChange",
   });
-  const isMobile = useMediaQuery(`(max-width:${screenSize.mobile})`);
   const isTablet = useMediaQuery(`(max-width:${screenSize.tablet})`);
 
   const { errors } = formState;
@@ -55,7 +54,7 @@ const Login = () => {
   };
 
   return (
-    <Stack gap={5} width={"100%"}>
+    <Stack gap={isTablet ? 3 : 5} width={"100%"} mt={isTablet ? 5 : 0}>
       <Typography fontSize={isTablet ? 24 : 30} fontWeight={600}>
         Login
       </Typography>
@@ -113,10 +112,11 @@ const Login = () => {
             <ErrorBox formState={formState} style={{ mb: 2 }} />
             <Stack
               display={"flex"}
-              direction={isMobile ? "column" : "row"}
+              direction={isTablet ? "column" : "row"}
               justifyContent={"space-between"}
-              alignItems={isMobile ? "flex-start" : "center"}
+              alignItems={isTablet ? "flex-start" : "center"}
               mt={1}
+              gap={2}
             >
               <Typography>
                 Don't have an account?
@@ -135,6 +135,7 @@ const Login = () => {
                 onClick={() => onSubmitHandler}
                 disabled={isFormDisabled}
                 endIcon={<NavigateNext />}
+                styles={{ alignSelf: "flex-end" }}
               />
             </Stack>
           </Stack>
