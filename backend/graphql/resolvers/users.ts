@@ -94,6 +94,23 @@ const resolvers = {
 
       return user;
     },
+
+    async user(
+      _: unknown,
+      { id }: { id: string },
+      ctx: any
+    ): Promise<IUser | null> {
+      const loggedInUserId = getLoggedInUserId(ctx);
+      const userId = loggedInUserId?.userId;
+
+      if (!userId) {
+        throw new ApolloError("User not authenticated", "NOT_AUTHENTICATED");
+      }
+
+      const user = (await User.findById(id)) as IUser;
+
+      return user;
+    },
   },
 };
 

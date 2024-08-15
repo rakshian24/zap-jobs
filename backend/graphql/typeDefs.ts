@@ -68,6 +68,7 @@ export const typeDefs = gql`
     me: User
     myJobs: [Job]
     getAllJobs(skill: [String], minSalary: Int): [Job]
+    user(id: ID!): User
   }
 
   type Mutation {
