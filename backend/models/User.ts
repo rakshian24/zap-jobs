@@ -2,7 +2,7 @@ import mongoose, { Document, Schema } from "mongoose";
 import bcrypt from "bcryptjs";
 import validator from "validator";
 
-enum Role {
+export enum Role {
   Freelancer = "Freelancer",
   Employer = "Employer",
 }
@@ -15,7 +15,6 @@ export interface IUser extends Document {
   role: Role;
   skills?: string[];
   githubProfile?: string;
-  projects?: string[];
   createdAt: Date;
   updatedAt: Date;
   matchPassword: (enteredPassword: string) => Promise<boolean>;
@@ -58,7 +57,6 @@ const userSchema = new Schema(
     },
     skills: { type: [String] },
     githubProfile: { type: String },
-    projects: { type: [String] },
   },
   {
     timestamps: true,

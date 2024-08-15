@@ -1,10 +1,12 @@
 import { AuthenticationError } from "apollo-server-errors";
 import jwt, { JwtPayload } from "jsonwebtoken";
+import { Role } from "../models/User";
 
 interface DecodedToken extends JwtPayload {
   userId: string;
   email: string;
   username: string;
+  role: Role;
 }
 
 const getLoggedInUserId = (context: any): DecodedToken => {
@@ -20,7 +22,7 @@ const getLoggedInUserId = (context: any): DecodedToken => {
         token,
         process.env.JWT_SECRET || ""
       ) as DecodedToken;
-      
+
       return user;
     } catch (error) {
       throw new AuthenticationError("Invalid/Expired token.");

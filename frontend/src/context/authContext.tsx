@@ -7,11 +7,13 @@ import React, {
   useState,
   ReactNode,
 } from "react";
+import { Roles } from "../components/Register/helpers";
 
 export interface User {
   userId: string;
   email: string;
   username: string;
+  role: Roles
 }
 
 interface AuthContextProps {
