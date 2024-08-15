@@ -45,6 +45,7 @@ const Employer = () => {
             buttonText="Create Job"
             onClick={() => setShowCreateJobModal(true)}
             styles={{ alignSelf: "flex-end" }}
+            dataTestId="employerCreateJobBtn"
           />
         </Stack>
       </Stack>

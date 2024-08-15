@@ -105,6 +105,7 @@ const Register = () => {
                     onChange={(e: SelectChangeEvent<unknown>) => {
                       field.onChange(e.target.value);
                     }}
+                    dataTestId="registrationRole"
                   >
                     {Object.values(Roles).map((role, index) => (
                       <MenuItem key={index} value={role}>
@@ -131,6 +132,7 @@ const Register = () => {
                     styles={{ width: "100%" }}
                     placeholder="Enter username"
                     label="Username"
+                    dataTestId="registrationUsername"
                   />
                 )}
               />
@@ -152,6 +154,7 @@ const Register = () => {
                   styles={{ width: "100%" }}
                   placeholder="Enter email"
                   label="Email"
+                  dataTestId="registrationEmail"
                 />
               )}
             />
@@ -178,6 +181,7 @@ const Register = () => {
                   styles={{ width: "100%" }}
                   placeholder="Enter password"
                   label="Password"
+                  dataTestId="registrationPassword"
                 />
               )}
             />
@@ -197,6 +201,7 @@ const Register = () => {
                   styles={{ width: "100%" }}
                   placeholder="Enter confirm password"
                   label="Confirm password"
+                  dataTestId="registrationConfirmPassword"
                 />
               )}
             />
