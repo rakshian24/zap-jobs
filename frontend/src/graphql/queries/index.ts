@@ -1,5 +1,18 @@
 import gql from "graphql-tag";
 
+export const GET_ME = gql`
+  query {
+    me {
+      _id
+      username
+      email
+      role
+      skills
+      githubProfile
+    }
+  }
+`;
+
 export const GET_MY_JOBS = gql`
   query {
     myJobs {
@@ -36,6 +49,19 @@ export const GET_ALL_JOBS = gql`
         _id
         username
       }
+    }
+  }
+`;
+
+export const GET_USER = gql`
+  query user($id: ID!) {
+    user(id: $id) {
+      _id
+      username
+      email
+      role
+      skills
+      githubProfile
     }
   }
 `;

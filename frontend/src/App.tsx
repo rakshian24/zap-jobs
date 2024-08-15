@@ -9,6 +9,7 @@ import Login from "./components/Login/Login";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Dashboard from "./pages/dashboard";
 import Footer from "./components/Footer/Footer";
+import Profile from "./pages/profile";
 
 function App() {
   const { user, isLoggedIn } = useAuth();
@@ -16,7 +17,7 @@ function App() {
   const isPcAndAbove = useMediaQuery(`(min-width:${screenSize.pc})`);
   const isMobile = useMediaQuery(`(max-width:${screenSize.mobile})`);
 
-  const { REGISTER, LOGIN, DASHBOARD } = ROUTES;
+  const { REGISTER, LOGIN, DASHBOARD, PROFILE } = ROUTES;
 
   return (
     <Stack sx={{ height: "100vh", minHeight: "100vh", margin: 0 }}>
@@ -47,6 +48,10 @@ function App() {
                 <Route
                   element={<Dashboard userInfo={user} />}
                   path={DASHBOARD}
+                />
+                <Route
+                  element={<Profile userId={user?.userId || ""} />}
+                  path={PROFILE}
                 />
               </Route>
             </Routes>
