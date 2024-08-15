@@ -2,6 +2,7 @@ import { ApolloError } from "apollo-server-errors";
 import getLoggedInUserId from "../../middleware/getLoggedInUserId";
 import Job, { IJob } from "../../models/Job";
 import User from "../../models/User";
+import { Types } from "mongoose";
 
 interface JobInput {
   title: string;
@@ -64,17 +65,31 @@ const resolvers = {
         throw new ApolloError("User not authenticated", "NOT_AUTHENTICATED");
       }
 
-      const job = (
-        await Job.findByIdAndUpdate(
-          jobId,
-          { $push: { applicants: userId } },
-          { new: true }
-        )
-      )?.toObject() as IJob;
+      const job = await Job.findByIdAndUpdate(
+        jobId,
+        { $push: { applicants: userId } },
+        { new: true }
+      );
 
       await User.findByIdAndUpdate(userId, { $push: { jobsApplied: jobId } });
 
-      return job;
+      const jobObject = job?.toObject() as IJob;
+      const userObjectId = new Types.ObjectId(userId);
+
+      const isAppliedByCurrentUser =
+        jobObject?.applicants?.some((applicant) => {
+          if (!Types.ObjectId.isValid(applicant._id)) {
+            return false;
+          }
+          const applicantObjectId = new Types.ObjectId(applicant._id);
+
+          return applicantObjectId.equals(userObjectId);
+        }) || false;
+
+      return {
+        ...jobObject,
+        isAppliedByCurrentUser,
+      };
     },
   },
   Query: {
@@ -96,25 +111,53 @@ const resolvers = {
       _: unknown,
       { skill, minSalary }: { skill: string[]; minSalary: number },
       ctx: any
-    ): Promise<IJob[] | null> {
+    ): Promise<(IJob & { isAppliedByCurrentUser: boolean })[]> {
       const loggedInUserId = getLoggedInUserId(ctx);
       const userId = loggedInUserId?.userId;
 
       if (!userId) {
-        throw new ApolloError("User not authenticated", "NOT_AUTHENTICATED");
+        throw new ApolloError(
+          "User not authenticated or invalid user ID",
+          "NOT_AUTHENTICATED"
+        );
       }
 
       const query: any = {};
 
       if (skill?.length > 0) {
-        query.tags = { $in: [skill] };
+        query.tags = { $in: skill };
       }
 
       if (minSalary !== undefined) {
         query.salaryPerHour = { $gte: minSalary };
       }
 
-      return await Job.find(query).populate("postedBy").populate("applicants");
+      const jobs = await Job.find(query)
+        .populate("postedBy")
+        .populate("applicants");
+
+      const userObjectId = new Types.ObjectId(userId);
+
+      const jobsWithAppliedStatus = jobs.map((job) => {
+        const jobObject = job.toObject() as IJob;
+
+        const isAppliedByCurrentUser =
+          jobObject?.applicants?.some((applicant) => {
+            if (!Types.ObjectId.isValid(applicant._id)) {
+              return false;
+            }
+            const applicantObjectId = new Types.ObjectId(applicant._id);
+
+            return applicantObjectId.equals(userObjectId);
+          }) || false;
+
+        return {
+          ...jobObject,
+          isAppliedByCurrentUser,
+        };
+      });
+
+      return jobsWithAppliedStatus;
     },
   },
 };

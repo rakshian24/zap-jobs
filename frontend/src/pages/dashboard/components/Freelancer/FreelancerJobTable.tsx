@@ -60,6 +60,7 @@ interface IJobData {
   salaryPerHour: number;
   applicants: IUser[];
   createdAt: Date;
+  isAppliedByCurrentUser: boolean;
 }
 
 type JobTableProps = {
@@ -96,6 +97,8 @@ const FreelancerJobTable = ({ jobData }: JobTableProps) => {
   const classes = useStyles();
   const isMobile = useMediaQuery(`(max-width:${screenSize.mobile})`);
 
+  const [appliedJobs, setAppliedJobs] = useState<string[]>([]);
+
   const [applyForJob, { loading: isApplyForJobLoading }] =
     useMutation(APPLY_FOR_JOB);
 
@@ -126,6 +129,9 @@ const FreelancerJobTable = ({ jobData }: JobTableProps) => {
           jobId,
         },
       });
+
+      setAppliedJobs((prevAppliedJobs) => [...prevAppliedJobs, jobId]);
+
       setSnackbarMessage("Applied for job successfully!");
       setSnackbarSeverity("success");
       setSnackbarOpen(true);
@@ -180,9 +186,18 @@ const FreelancerJobTable = ({ jobData }: JobTableProps) => {
                 </TableCell>
                 <TableCell>
                   <Button
-                    buttonText="Apply"
-                    onClick={(e) => handleApplyJob(job._id)}
+                    buttonText={
+                      appliedJobs.includes(job._id) ||
+                      job.isAppliedByCurrentUser
+                        ? "Applied"
+                        : "Apply"
+                    }
+                    onClick={() => handleApplyJob(job._id)}
                     isLoading={isLoading || isApplyForJobLoading}
+                    disabled={
+                      appliedJobs.includes(job._id) ||
+                      job.isAppliedByCurrentUser
+                    }
                   />
                 </TableCell>
               </TableRow>
