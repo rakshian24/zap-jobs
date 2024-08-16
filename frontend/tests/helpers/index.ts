@@ -37,7 +37,8 @@ function getRandomLanguages(count: number): string[] {
   );
 }
 
-export const randomLanguages: string[] = getRandomLanguages(9);
+export const randomLanguages = (limit: number): string[] =>
+  getRandomLanguages(limit);
 
 function getRandomJobRequirements(count: number): string[] {
   return Array.from({ length: count }, () =>
@@ -45,4 +46,5 @@ function getRandomJobRequirements(count: number): string[] {
   );
 }
 
-export const randomJobRequirements: string[] = getRandomJobRequirements(4);
+export const randomJobRequirements = (limit: number): string[] =>
+  getRandomJobRequirements(limit);

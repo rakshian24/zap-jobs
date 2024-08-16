@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { randomJobRequirements, randomLanguages } from "./helpers";
 
-export const DEV_URL = "http://localhost:3000/";
+export const DEV_URL = "https://zap-jobs.vercel.app/";
 export const NEXT_STEP_BUTTON = "SubmitBtn";
 
 export enum Role {
@@ -36,8 +36,10 @@ export const generateTestData = () => {
     role: Role.Employer,
     githubProfile: username,
     jobTitle: faker.name.jobTitle(),
-    skills: randomLanguages,
-    randomJobRequirements,
+    skills: randomLanguages(faker.number.int({ min: 1, max: 5 })),
+    randomJobRequirements: randomJobRequirements(
+      faker.number.int({ min: 1, max: 3 })
+    ),
     contactInfo: faker.person.firstName(),
     salaryPerHr: faker.number.int({ min: 0, max: 500 }),
   };
