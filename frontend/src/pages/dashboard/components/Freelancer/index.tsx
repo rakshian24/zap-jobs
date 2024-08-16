@@ -13,9 +13,7 @@ const Freelancer = () => {
   return (
     <Stack gap={isTablet ? 3 : 4}>
       <Typography fontSize={16}>
-        Great to see you! Your dashboard is your hub for finding new
-        opportunities, managing your applications, and staying updated on the
-        latest job postings. Let's explore the jobs available and get you hired!
+        Great to see you! You can view the jobs posted by the employers below.
       </Typography>
 
       <Stack gap={isTablet ? 3 : 4}>
