@@ -13,7 +13,7 @@ test.describe("Employer: Create Job", () => {
 
     console.log(`Creating Job ${testInfo.title}`);
 
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 200; i++) {
       testData = generateTestData();
       console.log(`testData_${i}`, testData);
 
@@ -22,11 +22,15 @@ test.describe("Employer: Create Job", () => {
       await page.getByTestId("jobDescription").fill("Some Random Text");
       await page
         .getByTestId("jobRequirements")
-        .type(testData.randomJobRequirements.join(","), { delay: 100 });
+        .type(testData.randomJobRequirements.join(","), { delay: 50 });
+
+      await page.getByTestId("jobRequirements").type(",", { delay: 50 });
 
       await page
         .getByTestId("tags")
-        .type(testData.skills.join(","), { delay: 100 });
+        .type(testData.skills.join(","), { delay: 50 });
+
+      await page.getByTestId("tags").type(",", { delay: 50 });
 
       await page.getByTestId("companyName").fill(testData.companyName);
       await page.getByTestId("contactInfo").fill(testData.contactInfo);
